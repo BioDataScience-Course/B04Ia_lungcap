@@ -1,0 +1,19 @@
+Package: B04Ia_lungcap
+Type: Package
+Version: 1.0.0
+Title: Modèle linéaire généralisé des habitudes de jeunes fumeurs
+Description: Projet individuel cadré du module 4 du cours SDD II à l'UMONS
+Authors@R: c(
+  person("Philippe", "Grosjean", role = c("aut", "cre"),
+    email = "phgrosjean@sciviews.org",
+    comment = c(ORCID = "0000-0002-2694-9471"),
+  person("Guyliann", "Engels", role = "aut",
+    email = "guyliann.engels@umons.ac.be"))
+  )
+Depends: R (>= 4.2.3)
+SystemRequirements: SciViews Box 2023 (https://www.sciviews.org/software/svbox/)
+License: CC BY-NC-SA 4.0
+URL: https://github.com/BioDataScience-Course/B04Ia_lungcap
+BugReports: https://github.com/BioDataScience-Course/B04Ia_lungcap/issues
+Encoding: UTF-8
+Language: fr-FR

@@ -1,0 +1,49 @@
+---
+title: "Jeunes fumeurs de l'est de Boston dans les années 1970"
+author: "___"
+date: "`r Sys.Date()`"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+editor: visual
+lang: fr
+bibliography: biblio/references.bib
+---
+
+```{r setup, include=FALSE}
+# Ceci est nécessaire pour les tests SDD, ne pas utiliser dans un "vrai" projet
+if (!"tools:tests" %in% search())
+  source(here::here("tests/tools_tests.R"), attach(NULL, name = "tools:tests"))
+
+# Configure SciViews::R environment
+___
+```
+
+# Introduction et but
+
+La cigarette est entrée dans les mœurs dans la seconde moitié du 20^e^ siècle à tel point que les fumeurs et fumeuses deviennent majoritaires dans certaines tranches de la population. Progressivement, une prise de conscience des dangers du tabac ont mené à diverses études médicales et scientifiques pour en étudier les méfaits. C'est dans ce contexte que @Tager1983 ont étudié l'impact de l'exposition à la fumée d'enfants et d'adolescents dans les années 1970 à l'est de Boston, Massachusetts, USA. Ils ont montré qu'une telle exposition diminue de manière significative le volume expiratoire maximal (forced expiratory volume ou FEV) de ces jeunes.
+
+@Kahn2005 reprends ces données et montre que la façon dont elles ont été récoltées et traitées est exemplaire d'un point de vue statistique. Donc, même si le sujet n'est plus tant d'actualité puisque les méfaits de la cigarette sont bien documentés, il n'en reste pas moins un jeu de données intéressant.
+
+Notre objectif ici n'est pas de reproduire les analyses déjà réalisées pour prédire la FEV en fonction d'autres variables. Nous allons prendre un autre point de vue qui consiste à se demander si nous pouvons prédire la probabilité d'avoir affaire à un fumeur ou une fumeuse, étant donné le FEV, son âge, sa taille et son genre dans cette population de jeunes de l'est de Boston.
+
+# Matériel et méthodes
+
+....
+
+# Résultats
+
+<!--% Importez les données lungcap.rds du dossier data et réalisez immédiatement une première description générale. -->
+
+```{r import, record='RODFS', object='lungcap'}
+lungcap <- read("___")
+skimr::skim(lungcap)
+```
+
+# Discussion et conclusion
+
+...
+
+# Références
