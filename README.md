@@ -2,7 +2,7 @@
 
 ## Avant-propos
 
-Ce projet nécessite d'avoir assimilé l'ensemble des notions des quatre premiers modules du cours de science des données biologiques 2. Il correspond au dépôt GitHub <https://github.com/BioDataScience-Course/B04Ia_lungcap>. Il est distribué sous licence **[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)**.
+Ce projet nécessite d'avoir assimilé l'ensemble des notions des quatre premiers modules du cours de science des données biologiques 2. Il correspond au dépôt GitHub <https://github.com/BioDataScience-Course/B04Ia_lungcap>. Il est distribué sous licence [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 ## Objectif
 

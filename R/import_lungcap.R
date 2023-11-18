@@ -38,7 +38,7 @@ lungcap$Ht <- lungcap$Ht * 2.54
 lungcap <- labelise(lungcap,
   label = list(
     Age    = "Âge",
-    FEV    = "Volume expiratoire max",
+    FEV    = "Volume respiratoire",
     Ht     = "Taille",
     Gender = "Genre",
     Smoke  = "Fume"
@@ -55,3 +55,4 @@ lungcap <- labelise(lungcap,
 # Sauvegarder la version finale du jeu de données et nettoyer l'environnement
 write$rds(lungcap, "data/lungcap.rds")
 rm(lungcap)
+
