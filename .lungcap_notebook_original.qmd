@@ -25,9 +25,9 @@ ___
 
 La cigarette est entrée dans les mœurs au 20^e^ siècle à tel point que les fumeurs et fumeuses deviennent majoritaires dans certaines tranches de la population. Progressivement, une prise de conscience des dangers du tabac ont mené à diverses études médicales et scientifiques pour en étudier les méfaits. C'est dans ce contexte que @Tager1983 ont étudié l'impact de l'exposition d'enfants et d'adolescents à la fumée de cigarette dans les années 1970 à l'est de Boston, Massachusetts, USA. Ils ont montré qu'une telle exposition diminue de manière significative le volume expiratoire maximal (forced expiratory volume ou FEV) de ces jeunes.
 
-@Kahn2005 reprends ces données et montre que la façon dont elles ont été récoltées et traitées est exemplaire d'un point de vue statistique. Donc, même si le sujet n'est plus tant d'actualité puisque les méfaits de la cigarette sont aujourd'hui bien documentés, il n'en reste pas moins un jeu de données intéressant.
+@Kahn2005 reprend ces données et montre que la façon dont elles ont été récoltées et traitées est exemplaire d'un point de vue statistique. Donc, même si le sujet n'est plus tant d'actualité puisque les méfaits de la cigarette sont aujourd'hui bien documentés, il n'en reste pas moins un jeu de données intéressant.
 
-Notre objectif ici est de déterminer si la FEV dépends de la cigarette, mais aussi d'établir si nous pouvons prédire la probabilité d'être fumeur ou fumeuse étant donné la FEV, l'âge, la taille et le genre dans cette population de jeunes de l'est de Boston.
+Notre objectif ici est de déterminer si la FEV dépend de la cigarette, mais aussi d'établir si nous pouvons prédire la probabilité d'être fumeur ou fumeuse étant donné la FEV, l'âge, la taille et le genre dans cette population de jeunes de l'est de Boston.
 
 # Matériel et méthodes
 
@@ -201,7 +201,7 @@ select_answer(r"-{
 [] -   Un point a un effet de levier important, mais sans influencer le modèle car sa distance de Cook est faible (D).
 [] -   Plusieurs points ont un effet de levier important, mais sans influencer le modèle car leurs distances de Cook sont faible (D).
 [] -   Un point a une distance de Cook importante (D).
-[] -   Plusieurs points ont une distance de Cook importante et ils se situent du même côte, ce qui est problématique (D).
+[] -   Plusieurs points ont une distance de Cook importante et ils se situent du même côté, ce qui est problématique (D).
 [] -   Plusieurs points ont une distance de Cook importante mais ils se répartissent de part et d'autre du zéro, ce qui minimise le problème (D).}-")
 ```
 
