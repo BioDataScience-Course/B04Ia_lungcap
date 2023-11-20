@@ -87,7 +87,7 @@ chart(___) +
   stat_smooth(method = "___", formula = ___)
 ```
 
-<!--% Travez un second graphique similaire au précédent, mais de la FEV en fonction de l'âge cette fois-ci. -->
+<!--% Tracez un second graphique similaire au précédent, mais de la FEV en fonction de l'âge cette fois-ci. -->
 
 ```{r fevage, record='RNP', args='labels'}
 chart(___) +
