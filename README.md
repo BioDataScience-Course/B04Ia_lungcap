@@ -1,12 +1,10 @@
 # Modèle linéaire généralisé des habitudes de jeunes fumeurs
 
-## Avant-propos
-
 Ce projet nécessite d'avoir assimilé l'ensemble des notions des quatre premiers modules du cours de science des données biologiques 2. Il correspond au dépôt GitHub <https://github.com/BioDataScience-Course/B04Ia_lungcap>. Il est distribué sous licence [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 ## Objectif
 
-Ce projet est **court**, **individuel** et **cadré**. Il vise à compléter votre apprentissage en modélisation de données biologiques en vous initiant aux modèles linéaires généralisés. Dans ce projet, vous devrez :
+Ce projet est **court**, **individuel** et **cadré**. Il vise à compléter votre apprentissage en modélisation de données biologiques en vous initiant aux modèles linéaires généralisés. Dans ce projet, vous devrez :
 
 -   Décrire correctement des données en vue de leur modélisation
 
@@ -24,4 +22,4 @@ Complétez les zones manquantes dans le fichier `lungcap_notebook.qmd`. Compilez
 
 Les données employées proviennent d'une étude sur les effets du tabagisme sur la fonction pulmonaire chez les enfants et les adolescents de l'est de Boston dans le milieu des années 1970. Elles ont été publiées dans le cadre de l'article suivant :
 
-Tager, Ira B., Scott T. Weiss, Alvaro Muñoz, Bernard Rosner, Frank E. Speizer, Ira B. Tager, Alvaro Muñoz, et Frank E. Speizer. 1983. « Longitudinal Study of the Effects of Maternal Smoking on Pulmonary Function in Children ». *New England Journal of Medicine* 309 (12): 699‑703. https://doi.org/10.1056/NEJM198309223091204.
+Tager, Ira B., Scott T. Weiss, Alvaro Muñoz, Bernard Rosner, Frank E. Speizer, Ira B. Tager, Alvaro Muñoz, et Frank E. Speizer. 1983. "Longitudinal Study of the Effects of Maternal Smoking on Pulmonary Function in Children". *New England Journal of Medicine* 309 (12): 699‑703. https://doi.org/10.1056/NEJM198309223091204.

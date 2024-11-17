@@ -3,11 +3,11 @@
 # description et métadonnées :
 #   https://rdrr.io/cran/GLMsData/man/lungcap.html
 # données :
-#   Il faut installer le package {GLMsData} pour accéder à ces données. Ce
-#   package n'est pas installé par défaut dans la SciViews Box 2023. Cependant,
-#   l'importation ayant déjà été réalisée pour vous, vous ne devez pas exécuter
-#   ce script et vous n'avez rien à faire pour avoir accès aux données remaniées
-#   qui sont dans le fichier `data/lungcap.rds`.
+#   Les données proviennent du package {GLMsData} installé par défaut dans la
+#   SciViews Box 2024. Cependant, l'importation ayant déjà été réalisée pour
+#   vous, vous ne devez pas exécuter ce script et vous n'avez rien à faire pour
+#   avoir accès aux données remaniées qui sont dans le fichier
+#   `data/lungcap.rds`.
 
 # Configuration de l'environnement
 SciViews::R("model", lang = "fr")
@@ -17,7 +17,7 @@ SciViews::R("model", lang = "fr")
 lungcap <- read("lungcap", package = "GLMsData")
 attr(lungcap, "spec") <- NULL
 attr(lungcap, "problems") <- NULL
-# Aide en ligne si {GLMsData} est installé
+# Aide en ligne
 #?GLMsData::lungcap
 
 

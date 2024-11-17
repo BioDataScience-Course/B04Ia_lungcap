@@ -33,7 +33,7 @@ Notre objectif ici est de déterminer si la FEV dépend de la cigarette, mais au
 
 Les données sont disponibles sous licence GPL ≥ 2 à partir du package R {GLMsData}. Elles correspondent à une petite partie seulement des données de @Tager1983. Le jeu de données est, en outre, légèrement remanié (traitement documenté dans le fichier `R/import_lungcap.R`).
 
-L'analyse est réalisée avec le [logiciel R](https://www.r-project.org) (`r R.version.string`) et en particulier le package {modelit} version `r packageVersion("modelit")` dans la [SciViews Box 2023](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version finale de ce bloc-notes.
+L'analyse est réalisée avec le [logiciel R](https://www.r-project.org) (`r R.version.string`) et en particulier le package {modelit} version `r packageVersion("modelit")` dans la [SciViews Box 2024](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version finale de ce bloc-notes.
 
 # Résultats
 
@@ -63,7 +63,7 @@ La répartition en sous-populations en fonction du genre ou de l'habitude de fum
 
 <!--% Réalisez un tableau de contingence à double entrée et sortez-en une version améliorée avec tabularise(). -->
 
-```{r table, record='RNP', arg='col_keys'}
+```{r table, record='RNP', arg='col_keys', warning=FALSE}
 table(Fumeur = ___, Genre = ___) |>
   tabularise()
 ```
@@ -81,7 +81,7 @@ Les relations entre FEV et taille et FEV et âge pour les deux sous-populations 
 
 <!--% Visualisez la relation entre FEV et la taille en utilisant la couleur pour 'Smoke' et les facettes pour le genre. Ajoutez les droites de régression. -->
 
-```{r fevht, record='RNP', args='labels'}
+```{r fevht, record='RNCS'}
 chart(___) +
   ___ +
   stat_smooth(method = "___", formula = ___)
@@ -89,7 +89,7 @@ chart(___) +
 
 <!--% Tracez un second graphique similaire au précédent, mais de la FEV en fonction de l'âge cette fois-ci. -->
 
-```{r fevage, record='RNP', args='labels'}
+```{r fevage, record='RNCS'}
 chart(___) +
   ___ +
   ___
@@ -120,7 +120,7 @@ Il est relativement logique que le volume respiratoire ou expiratoire maximal d�
 
 <!--% Utilisez un modèle linéaire généralisé pour étudier la relation entre la FEV et les autres variables genre, âge, taille sans interactions entres elles, mais bien avec la variable Smoke. Résumez votre analyse et formatez le tableau avec tabularise(). -->
 
-```{r fev_glm, warning=FALSE, record='ROP', object='fev_glm', arg='call'}
+```{r fev_glm, warning=FALSE, record='ROP', object='fev_glm', arg='call', warning=FALSE}
 fev_glm <- glm(data = ___, FEV ~ (___) * ___, family = ___)
 summary(fev_glm) |> tabularise()
 ```
@@ -138,7 +138,7 @@ Sur base des ces observations, nous tentons une simplification du modèle.
 
 <!-- Simplifiez le modèle précédent en gardant toutes les variables, mais en ne conservant plus que les interactions entre la taille et Smoke et faites un "tabularise" de son résumé. -->
 
-```{r fev_glm2, warning=FALSE, record='ROP', object='fev_glm2', arg='call'}
+```{r fev_glm2, warning=FALSE, record='ROP', object='fev_glm2', arg='call', warning=FALSE}
 fev_glm2 <- glm(___)
 ___
 ```
@@ -156,7 +156,7 @@ Quel est le modèle le plus pertinent ici ?
 
 <!--% Comparez vos deux modèles pour vous aider à choisir le meilleur, à l'aide de l'AIC et d'une ANOVA. -->
 
-```{r fev_compa, record='RNP', arg='col_keys'}
+```{r fev_compa, record='RNP', arg='col_keys', warning=FALSE}
 AIC(___)
 anova(___, ___ = "F") |> tabularise()
 ```
@@ -175,7 +175,7 @@ Vérification de notre modèle par l'analyse de ses résidus.
 
 <!--% Effectuez l'analyse des résidus du modèle que vous conservez (version utilisant les quatre graphiques composites. -->
 
-```{r fev_resid, record='RNP', args='labels'}
+```{r fev_resid, record='RNCS'}
 chart$___(___)
 ```
 
@@ -217,7 +217,7 @@ Ce modèle est équivalent à un modèle linéaire.
 
 <!--% Effectuez le modèle linéaire avec lm() équivalent au modèle que vous avez retenu et affichez la version "tabularise()" de son résumé pour vérifier qu'il s'agit bien du même modèle. -->
 
-```{r fev_lm, warning=FALSE, record='ROP', object='fev_lm', arg='call'}
+```{r fev_lm, warning=FALSE, record='ROP', object='fev_lm', arg='call', warning=FALSE}
 fev_lm <- lm(___)
 ___
 ```
@@ -238,7 +238,7 @@ Dans le modèle précédent `Smoke` joue un rôle mineur mais non nul comme vari
 
 <!--% Réalisez une GLM pour prédire Smoke en fonction du genre, de l'âge, de FEV et de la taille sans interaction, puis faites-en le résumé "tabularisé". -->
 
-```{r smoke_glm, warning=FALSE, record='ROP', object='smoke_glm', arg='call'}
+```{r smoke_glm, warning=FALSE, record='ROP', object='smoke_glm', arg='call', warning=FALSE}
 smoke_glm <- glm(data = ___, ___, family = ___)
 ___
 ```
@@ -256,7 +256,7 @@ Essayons de simplifier ce modèle.
 
 <!--% Ajustez un modèle linéaire généralisé pour lequel vous retirez le terme le moins significatif et faites-en le résumé. -->
 
-```{r smoke_glm2, warning=FALSE, record='ROP', object='smoke_glm2', arg='call'}
+```{r smoke_glm2, warning=FALSE, record='ROP', object='smoke_glm2', arg='call', warning=FALSE}
 smoke_glm2 <- glm(___)
 ___
 ```
@@ -265,7 +265,7 @@ Lequel des deux modèles allons-nous conserver ?
 
 <!--% Comparez ces deux modèles. -->
 
-```{r smoke_compa, record='RNP', arg='col_keys'}
+```{r smoke_compa, record='RNP', arg='col_keys', warning=FALSE}
 AIC(___)
 anova(___, test = "___")  |>
   tabularise()
@@ -287,7 +287,7 @@ Tentons un modèle quasi binomial.
 
 <!--% Réalisez un modèle quasi binomial du modèle complet reprenant toutes les variables mais sans interaction. Ensuite faites-en le résumé "tabularisé" comme d'habitude. -->
 
-```{r smoke_glm3, warning=FALSE, record='ROP', object='smoke_glm3', arg='call'}
+```{r smoke_glm3, warning=FALSE, record='ROP', object='smoke_glm3', arg='call', warning=FALSE}
 smoke_glm3 <- glm(___)
 ___
 ```
