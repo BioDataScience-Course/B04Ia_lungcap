@@ -120,6 +120,8 @@ Il est relativement logique que le volume respiratoire ou expiratoire maximal d�
 
 <!--% Utilisez un modèle linéaire généralisé pour étudier la relation entre la FEV et les autres variables genre, âge, taille sans interactions entres elles, mais bien avec la variable Smoke. Résumez votre analyse et formatez le tableau avec tabularise(). -->
 
+<!--% TODO reviser pour essayer d'employer un modele quasi gaussien -->
+
 ```{r fev_glm, warning=FALSE, record='ROP', object='fev_glm', arg='call', warning=FALSE}
 fev_glm <- glm(data = ___, FEV ~ (___) * ___, family = ___)
 summary(fev_glm) |> tabularise()
