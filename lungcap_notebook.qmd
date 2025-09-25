@@ -17,15 +17,18 @@ bibliography: biblio/references.bib
 if (!"tools:tests" %in% search())
   source(here::here("tests/tools_tests.R"), attach(NULL, name = "tools:tests"))
 
-# Configure SciViews::R environment
+# Configure Knitr pour utiliser AGG comme périphérique graphique
+knitr::opts_chunk$set(dev = "ragg_png")
+
+# Configure l’environnement SciViews::R
 ___
 ```
 
 # Introduction et but
 
-La cigarette est entrée dans les mœurs au 20^e^ siècle à tel point que les fumeurs et fumeuses deviennent majoritaires dans certaines tranches de la population. Progressivement, une prise de conscience des dangers du tabac ont mené à diverses études médicales et scientifiques pour en étudier les méfaits. C'est dans ce contexte que @Tager1983 ont étudié l'impact de l'exposition d'enfants et d'adolescents à la fumée de cigarette dans les années 1970 à l'est de Boston, Massachusetts, USA. Ils ont montré qu'une telle exposition diminue de manière significative le volume expiratoire maximal (forced expiratory volume ou FEV) de ces jeunes.
+La cigarette est entrée dans les mœurs au 20^e^ siècle à tel point que les fumeurs et fumeuses deviennent majoritaires dans certaines tranches de la population. Progressivement, une prise de conscience des dangers du tabac a mené à diverses études médicales et scientifiques pour en étudier les méfaits. C'est dans ce contexte que @Tager1983 ont étudié l'impact de l'exposition d'enfants et d'adolescents à la fumée de cigarette dans les années 1970 à l'est de Boston, Massachusetts, USA. Ils ont montré qu'une telle exposition diminue de manière significative le volume expiratoire maximal (forced expiratory volume ou FEV) de ces jeunes.
 
-@Kahn2005 reprend ces données et montre que la façon dont elles ont été récoltées et traitées est exemplaire d'un point de vue statistique. Donc, même si le sujet n'est plus tant d'actualité puisque les méfaits de la cigarette sont aujourd'hui bien documentés, il n'en reste pas moins un jeu de données intéressant.
+@Kahn2005 reprend ces données et montre que la façon dont elles ont été récoltées et traitées est exemplaire d'un point de vue statistique. Donc, même si le sujet n'est plus tant d'actualité, puisque les méfaits de la cigarette sont aujourd'hui bien documentés, il n'en reste pas moins un jeu de données intéressant.
 
 Notre objectif ici est de déterminer si la FEV dépend de la cigarette, mais aussi d'établir si nous pouvons prédire la probabilité d'être fumeur ou fumeuse étant donné la FEV, l'âge, la taille et le genre dans cette population de jeunes de l'est de Boston.
 
@@ -33,11 +36,11 @@ Notre objectif ici est de déterminer si la FEV dépend de la cigarette, mais au
 
 Les données sont disponibles sous licence GPL ≥ 2 à partir du package R {GLMsData}. Elles correspondent à une petite partie seulement des données de @Tager1983. Le jeu de données est, en outre, légèrement remanié (traitement documenté dans le fichier `R/import_lungcap.R`).
 
-L'analyse est réalisée avec le [logiciel R](https://www.r-project.org) (`r R.version.string`) et en particulier le package {modelit} version `r packageVersion("modelit")` dans la [SciViews Box 2024](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version finale de ce bloc-notes.
+L'analyse est réalisée avec le [logiciel R](https://www.r-project.org) (`r R.version.string`) et en particulier le package {modelit} version `r packageVersion("modelit")` dans la [SciViews Box 2025](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version finale de ce bloc-notes.
 
 # Résultats
 
-<!--% Importez les données lungcap.rds du dossier data et réalisez immédiatement une première description générale. -->
+<!--% Importez les données lungcap.rds du dossier data et réalisez immédiatement une première description générale avec skim() et la fonction {skimr}.-->
 
 ```{r import, record='RODFS', object='lungcap'}
 lungcap <- read("___")
@@ -50,18 +53,18 @@ select_answer(r"-{
 [] -   Il y a plusieurs valeurs manquantes dans ce jeu de données.
 [] -   Les données se distribuent de manière relativement équilibrée entre genre et fumeurs ou non.
 [] -   Les données sont équilibrées entre les fumeurs ou non mais pas pour le genre.
-[] -   Les données sont équilibrées pour le genre mais pas pour les fumeurs ou non.
+[] -   Les données sont équilibrées pour le genre, mais pas pour les fumeurs ou non.
 [] -   Les données ne sont pas équilibrées, ni pour le genre, ni par rapport aux fumeurs ou non.
-[] -   Les variables quantitatives FEV, Ht et Age ont des distribution unimodales.
-[] -   Les variables quantitatives FEV, Ht et Age ont des distribution bimodales.
-[] -   Les variables quantitatives FEV, Ht et Age ont des distribution multimodales.}-")
+[] -   Les variables quantitatives FEV, Ht et Age ont des distributions unimodales.
+[] -   Les variables quantitatives FEV, Ht et Age ont des distributions bimodales.
+[] -   Les variables quantitatives FEV, Ht et Age ont des distributions multimodales.}-")
 ```
 
 ## Étude descriptive des données
 
 La répartition en sous-populations en fonction du genre ou de l'habitude de fumer ou non est présentée dans le tableau ci-dessous.
 
-<!--% Réalisez un tableau de contingence à double entrée et sortez-en une version améliorée avec tabularise(). -->
+<!--% Réalisez un tableau de contingence à double entrée (variables `Smoke` et `Gender`) et sortez-en une version améliorée avec tabularise(). -->
 
 ```{r table, record='RNP', arg='col_keys', warning=FALSE}
 table(Fumeur = ___, Genre = ___) |>
@@ -70,9 +73,9 @@ table(Fumeur = ___, Genre = ___) |>
 
 La corrélation de Pearson entre les variables quantitatives du jeu de données est représentée graphiquement ci-dessous.
 
-<!--% Calculez la corrélation de Pearson entre les trois variables quantitives et faites-en un graphique. -->
+<!--% Calculez la corrélation de Pearson entre les trois variables quantitatives et faites-en un graphique. -->
 
-```{r corr, record='ROA', object='corr', arg='dimnames'}
+```{r corr, record='ROA', object='corr', arg='dimnames', warning=FALSE}
 corr <- correlation(___)
 plot(corr)
 ```
@@ -102,8 +105,8 @@ select_answer(r"-{
 [] -  Les données sont à peu près balancées pour le genre avec 48.6% de femmes.
 [] -   Les données ne sont pas balancées pour le genre avec 48.6% de femmes.
 [] -   Les données sont balancées entre fumeurs et non fumeurs.
-[] -   Les données ne sont pas balancées entre fumeurs et non fumeurs. Il y a seulement 10% de fumeurs et la majorité sont des femmes.
-[] -   Les données ne sont pas balancées entre fumeurs et non fumeurs. Il y a seulement 10% de fumeurs et la majorité sont des hommes.
+[] -   Les données ne sont pas balancées entre fumeurs et non fumeurs. Il y a seulement 10% de fumeurs et la majorité est des femmes.
+[] -   Les données ne sont pas balancées entre fumeurs et non fumeurs. Il y a seulement 10% de fumeurs et la majorité est des hommes.
 [] -   Les variables quantitatives sont toutes positivement corrélées, mais de manière moyenne. Il n'y a pas de problème d'intercorrélation pour le modèle.
 [] -   Les variables quantitatives sont toutes positivement corrélées, de manière moyenne à forte. Il faut se méfier de l'intercorrélation pour le modèle.
 [] -   Pour les non fumeurs, les nuages de points sont à peu près linéaires, tant pour la FEV en fonction de la taille et de l'âge.
@@ -118,13 +121,11 @@ select_answer(r"-{
 
 Il est relativement logique que le volume respiratoire ou expiratoire maximal dépende de la taille, et de l'âge. Des différences sont aussi attendues en fonction du genre. Mais qu'en est-il du fait de fumer ou non ? Nous utilisons un modèle linéaire généralisé pour le déterminer.
 
-<!--% Utilisez un modèle linéaire généralisé pour étudier la relation entre la FEV et les autres variables genre, âge, taille sans interactions entres elles, mais bien avec la variable Smoke. Résumez votre analyse et formatez le tableau avec tabularise(). -->
-
-<!--% TODO reviser pour essayer d'employer un modele quasi gaussien -->
+<!--% Utilisez un modèle linéaire généralisé pour étudier la relation entre la FEV et les autres variables genre, âge, taille sans interactions entre elles, mais bien avec la variable Smoke. Résumez votre analyse avec la fonction summary_() et formatez le tableau avec tabularise(). -->
 
 ```{r fev_glm, warning=FALSE, record='ROP', object='fev_glm', arg='call', warning=FALSE}
 fev_glm <- glm(data = ___, FEV ~ (___) * ___, family = ___)
-summary(fev_glm) |> tabularise()
+summary_(fev_glm) |> tabularise()
 ```
 
 ```{r fev_glmcomment, output='asis'}
@@ -133,16 +134,16 @@ select_answer(r"-{
 [] -   La déviance résiduelle est faible par rapport à ses degrés de liberté, il y a sous-dispersion.
 [] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%.
 [] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, hors termes d'interaction qui ne le sont pas.
-[] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, hors termes d'interaction qui ne le sont pas (mais les interactions entre la taille et le fait de fumer a une valeur *p* proche de 1%).}-")
+[] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, hors termes d'interaction qui ne le sont pas (mais les interactions entre la taille et le fait de fumer ont une valeur *p* proche de 1%).}-")
 ```
 
-Sur base des ces observations, nous tentons une simplification du modèle.
+Sur base de ces observations, nous tentons une simplification du modèle.
 
 <!-- Simplifiez le modèle précédent en gardant toutes les variables, mais en ne conservant plus que les interactions entre la taille et Smoke et faites un "tabularise" de son résumé. -->
 
 ```{r fev_glm2, warning=FALSE, record='ROP', object='fev_glm2', arg='call', warning=FALSE}
 fev_glm2 <- glm(___)
-___
+summary_(fev_glm2) |> tabularise()
 ```
 
 ```{r fev_glm2comment, output='asis'}
@@ -151,16 +152,16 @@ select_answer(r"-{
 [] -   La déviance résiduelle est faible par rapport à ses degrés de liberté, il y a sous-dispersion.
 [] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%.
 [] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, sauf les deux derniers.
-[] -   Aucun termes du modèle ne sont significatifs au seuil $\alpha$ de 5%.}-")
+[] -   Aucun des termes du modèle n'est significatif au seuil $\alpha$ de 5%.}-")
 ```
 
 Quel est le modèle le plus pertinent ici ?
 
-<!--% Comparez vos deux modèles pour vous aider à choisir le meilleur, à l'aide de l'AIC et d'une ANOVA. -->
+<!--% Comparez vos deux modèles pour vous aider à choisir le meilleur, à l'aide de l'AIC et d'une ANOVA (employé la fonction anova_() au lieu de anova()) -->
 
 ```{r fev_compa, record='RNP', arg='col_keys', warning=FALSE}
 AIC(___)
-anova(___, ___ = "F") |> tabularise()
+anova_(___, ___ = "F") |> tabularise()
 ```
 
 ```{r fev_compacomment, output='asis'}
@@ -177,7 +178,7 @@ Vérification de notre modèle par l'analyse de ses résidus.
 
 <!--% Effectuez l'analyse des résidus du modèle que vous conservez (version utilisant les quatre graphiques composites. -->
 
-```{r fev_resid, record='RNCS'}
+```{r fev_resid, record='RNCS', arg='no.data'}
 chart$___(___)
 ```
 
@@ -201,15 +202,15 @@ select_answer(r"-{
 [] -   Il y a hétéroscédasticité des résidus (C).
 [] -   Aucun point n'a de distance de Cook importante, ni de grand effet de levier (D).
 [] -   Un point a un effet de levier important, mais sans influencer le modèle car sa distance de Cook est faible (D).
-[] -   Plusieurs points ont un effet de levier important, mais sans influencer le modèle car leurs distances de Cook sont faible (D).
+[] -   Plusieurs points ont un effet de levier important, mais sans influencer le modèle car leurs distances de Cook sont faibles (D).
 [] -   Un point a une distance de Cook importante (D).
 [] -   Plusieurs points ont une distance de Cook importante et ils se situent du même côté, ce qui est problématique (D).
-[] -   Plusieurs points ont une distance de Cook importante mais ils se répartissent de part et d'autre du zéro, ce qui minimise le problème (D).}-")
+[] -   Plusieurs points ont une distance de Cook importante, mais ils se répartissent de part et d'autre du zéro, ce qui minimise le problème (D).}-")
 ```
 
 Voici l'équation du modèle que nous retenons :
 
-<!--% Paramétrisez le modèle retenu (certains arguments sont déjà préremplis pour bien présenter l'équation... Inspirez vous de ceci pour plus tard). -->
+<!--% Paramétrisez le modèle retenu (certains arguments sont déjà préremplis pour bien présenter l'équation... Inspirez-vous de ceci pour plus tard). -->
 
 $$
 `r eq__(___, use_coefs = ___, ___ = c(2, 2, 3, 3, 2, 3), wrap = TRUE, terms_per_line = 2)`
@@ -221,7 +222,7 @@ Ce modèle est équivalent à un modèle linéaire.
 
 ```{r fev_lm, warning=FALSE, record='ROP', object='fev_lm', arg='call', warning=FALSE}
 fev_lm <- lm(___)
-___
+summary_(fev_lm) |> tabularise()
 ```
 
 ```{r fev_lmcomment, output='asis'}
@@ -236,9 +237,9 @@ select_answer(r"-{
 
 ## Probabilité d'être fumeur
 
-Dans le modèle précédent `Smoke` joue un rôle mineur mais non nul comme variable prédictive de `FEV`. Est-il possible de prédire, à l'inverse la probabilité d'être fumeur à l'aide des autres variables, dont `FEV` ?
+Dans le modèle précédent `Smoke` joue un rôle mineur mais non nul comme variable prédictive de `FEV`. Est-il possible de prédire, à l'inverse, la probabilité d'être fumeur à l'aide des autres variables, dont `FEV` ?
 
-<!--% Réalisez une GLM pour prédire Smoke en fonction du genre, de l'âge, de FEV et de la taille sans interaction, puis faites-en le résumé "tabularisé". -->
+<!--% Réalisez une GLM pour prédire Smoke en fonction du genre, de l'âge, de FEV et de la taille sans interaction, puis faites-en le résumé (avec la fonction summary_()) "tabularisé" . -->
 
 ```{r smoke_glm, warning=FALSE, record='ROP', object='smoke_glm', arg='call', warning=FALSE}
 smoke_glm <- glm(data = ___, ___, family = ___)
@@ -269,7 +270,7 @@ Lequel des deux modèles allons-nous conserver ?
 
 ```{r smoke_compa, record='RNP', arg='col_keys', warning=FALSE}
 AIC(___)
-anova(___, test = "___")  |>
+anova_(___, test = "___")  |>
   tabularise()
 ```
 
@@ -287,7 +288,7 @@ select_answer(r"-{
 
 Tentons un modèle quasi binomial.
 
-<!--% Réalisez un modèle quasi binomial du modèle complet reprenant toutes les variables mais sans interaction. Ensuite faites-en le résumé "tabularisé" comme d'habitude. -->
+<!--% Réalisez un modèle quasi binomial du modèle complet reprenant toutes les variables, mais sans interaction. Ensuite faites-en le résumé "tabularisé" comme d'habitude. -->
 
 ```{r smoke_glm3, warning=FALSE, record='ROP', object='smoke_glm3', arg='call', warning=FALSE}
 smoke_glm3 <- glm(___)
@@ -299,7 +300,7 @@ select_answer(r"-{
 [] -  L'estimation des paramètres des modèles binomial et quasi binomial est identique.
 [] -  L'estimation des paramètres des modèles binomial et quasi binomial est très similaire.
 [] -  L'estimation des paramètres des modèles binomial et quasi binomial est différente.
-[] -   Le paramètre de dispersion estimé est 300/649 = 0.46 est le même dans les deux cas. La valeur utilisée par les modèles sont également les mêmes.
+[] -   Le paramètre de dispersion estimé est 300/649 = 0.46 est le même dans les deux cas. La valeur utilisée par les modèles est également la même.
 [] -   Le paramètre de dispersion estimé est 300/649 = 0.46 est le même dans les deux cas. Mais alors que le modèle binomial fixe ce paramètre à un, le quasi binomial l'a recalculé à 0.7, apportant ainsi une correction.
 [] -   L'écart type des paramètres est le même entre les deux GLMs.
 [] -   L'écart type des paramètres est supérieur pour la quasi binomiale en cas de sous-dispersion.

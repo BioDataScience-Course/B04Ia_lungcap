@@ -9,7 +9,7 @@ test_that("Le bloc-notes est-il compilé en un fichier final HTML ?", {
   # Vérifiez aussi que ce rendu se réalise sans erreur, sinon, lisez le message
   # qui s'affiche dans l'onglet 'Travaux' et corrigez ce qui ne va pas dans
   # votre document avant de réaliser à nouveau un rendu HTML.
-  # IL EST TRES IMPORTANT QUE VOTRE DOCUMENT COMPILE ! C'est tout de même le but
+  # IL EST TRÈS IMPORTANT QUE VOTRE DOCUMENT COMPILE ! C'est tout de même le but
   # de votre analyse que d'obtenir le document final HTML.
 
   expect_true(is_rendered_current("lungcap_notebook.qmd"))
@@ -93,7 +93,7 @@ test_that("Chunks 'import' & 'importcomment' : importation des données", {
   expect_true(is_identical_to_ref("importcomment"))
   # L'interprétation de la description des données est (partiellement) fausse
   # dans 'importcomment'
-  # Vous devez cochez les phrases qui décrivent les tables descriptives d'un
+  # Vous devez cocher les phrases qui décrivent les tables descriptives d'un
   # 'x' entre les crochets [] -> [x]. Ensuite, vous devez recompiler la version
   # HTML du bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les
   # résultats.
@@ -130,7 +130,7 @@ test_that("Chunks 'table', 'corr', fevht', fevage' & 'desccomment' : description
   expect_true(is_identical_to_ref("desccomment"))
   # L'interprétation de la description des données est (partiellement) fausse
   # dans le chunk 'desccomment'
-  # Vous devez cochez les phrases qui décrivent les graphiques et la table d'un
+  # Vous devez cocher les phrases qui décrivent les graphiques et la table d'un
   # 'x' entre les crochets [] -> [x]. Ensuite, vous devez recompiler la version
   # HTML du bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les
   # résultats.
@@ -149,7 +149,7 @@ test_that("Chunks 'fev_glm', 'fev_glmcomment', premier modèle linéaire génér
   expect_true(is_identical_to_ref("fev_glmcomment"))
   # L'interprétation du premier modèle linéaire généralisé pour FEV est
   # (partiellement) fausse
-  # Vous devez cochez les phrases qui décrivent le modèle d'un 'x' entre les
+  # Vous devez cocher les phrases qui décrivent le modèle d'un 'x' entre les
   # crochets [] -> [x]. Ensuite, vous devez recompiler la version HTML du
   # bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les résultats.
   # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
@@ -167,7 +167,7 @@ test_that("Chunks 'fev_glm2', 'fev_glm2comment', premier modèle linéaire gén�
   expect_true(is_identical_to_ref("fev_glm2comment"))
   # L'interprétation du second modèle linéaire généralisé pour FEV est
   # (partiellement) fausse
-  # Vous devez cochez les phrases qui décrivent le modèle d'un 'x' entre les
+  # Vous devez cocher les phrases qui décrivent le modèle d'un 'x' entre les
   # crochets [] -> [x]. Ensuite, vous devez recompiler la version HTML du
   # bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les résultats.
   # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
@@ -184,7 +184,7 @@ test_that("Chunks 'fev_compa', 'fev_compacomment', comparaison des deux premiers
   expect_true(is_identical_to_ref("fev_compacomment"))
   # L'interprétation de la comparaison des deux premiers modèles généralisés
   # pour FEV est (partiellement) fausse
-  # Vous devez cochez les phrases qui décrivent la comparaison d'un 'x' entre
+  # Vous devez cocher les phrases qui décrivent la comparaison d'un 'x' entre
   # les crochets [] -> [x]. Ensuite, vous devez recompiler la version HTML du
   # bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les résultats.
   # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
@@ -200,7 +200,7 @@ test_that("Chunks 'fev_resid' & 'fev_residcomment' : graphiques d'analyse des r�
   expect_true(is_identical_to_ref("fev_residcomment"))
   # L'interprétation des graphiques d'analyse des résidus du modèle FEV est
   # (partiellement) fausse
-  # Vous devez cochez les phrases qui décrivent les graphiques d'un 'x' entre
+  # Vous devez cocher les phrases qui décrivent les graphiques d'un 'x' entre
   # les crochets [] -> [x]. Ensuite, vous devez recompiler la version HTML du
   # bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les résultats.
   # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
@@ -226,8 +226,8 @@ test_that("Chunks 'fev_lm', 'fev_lmcomment', modèle linéaire pour FEV", {
 
   expect_true(is_identical_to_ref("fev_lmcomment"))
   # L'interprétation du modèle linéaire pour FEV et sa comparaison au modèle
-  # linéaire génralisé est (partiellement) fausse
-  # Vous devez cochez les phrases qui décrivent le modèle d'un 'x' entre les
+  # linéaire généralisé est (partiellement) fausse
+  # Vous devez cocher les phrases qui décrivent le modèle d'un 'x' entre les
   # crochets [] -> [x]. Ensuite, vous devez recompiler la version HTML du
   # bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les résultats.
   # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
@@ -245,7 +245,7 @@ test_that("Chunks 'smoke_glm', 'smoke_glmcomment', premier modèle linéaire gé
   expect_true(is_identical_to_ref("smoke_glmcomment"))
   # L'interprétation du premier modèle linéaire généralisé pour Smoke est
   # (partiellement) fausse
-  # Vous devez cochez les phrases qui décrivent le modèle d'un 'x' entre les
+  # Vous devez cocher les phrases qui décrivent le modèle d'un 'x' entre les
   # crochets [] -> [x]. Ensuite, vous devez recompiler la version HTML du
   # bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les résultats.
   # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
@@ -269,7 +269,7 @@ test_that("Chunks 'smoke_glm2', 'smoke_compa', 'smoke_compacomment', second mod�
   expect_true(is_identical_to_ref("smoke_compacomment"))
   # L'interprétation de la comparaison des deux modèles généralisés pour Smoke
   # est (partiellement) fausse
-  # Vous devez cochez les phrases qui décrivent la comparaison d'un 'x' entre
+  # Vous devez cocher les phrases qui décrivent la comparaison d'un 'x' entre
   # les crochets [] -> [x]. Ensuite, vous devez recompiler la version HTML du
   # bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les résultats.
   # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus

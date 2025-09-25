@@ -1,0 +1,330 @@
+---
+title: "Jeunes fumeurs de l'est de Boston dans les années 1970"
+author: "Teachers"
+date: "`r Sys.Date()`"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+editor: visual
+lang: fr
+bibliography: biblio/references.bib
+---
+
+antidote_zzzzzz{r setup, include=FALSE}
+# Ceci est nécessaire pour les tests SDD, ne pas utiliser dans un "vrai" projet
+if (!"tools:tests" %in% search())
+  source(here::here("tests/tools_tests.R"), attach(NULL, name = "tools:tests"))
+
+# Configure Knitr pour utiliser AGG comme périphérique graphique
+knitr::opts_chunk$set(dev = "ragg_png")
+
+# Configure l’environnement SciViews::R
+SciViews::R("model", lang = "fr")
+antidote_zzzzzz
+
+# Introduction et but
+
+La cigarette est entrée dans les mœurs au 20^e^ siècle à tel point que les fumeurs et fumeuses deviennent majoritaires dans certaines tranches de la population. Progressivement, une prise de conscience des dangers du tabac ont mené à diverses études médicales et scientifiques pour en étudier les méfaits. C'est dans ce contexte que @Tager1983 ont étudié l'impact de l'exposition d'enfants et d'adolescents à la fumée de cigarette dans les années 1970 à l'est de Boston, Massachusetts, USA. Ils ont montré qu'une telle exposition diminue de manière significative le volume expiratoire maximal (forced expiratory volume ou FEV) de ces jeunes.
+
+@Kahn2005 reprend ces données et montre que la façon dont elles ont été récoltées et traitées est exemplaire d'un point de vue statistique. Donc, même si le sujet n'est plus tant d'actualité puisque les méfaits de la cigarette sont aujourd'hui bien documentés, il n'en reste pas moins un jeu de données intéressant.
+
+Notre objectif ici est de déterminer si la FEV dépend de la cigarette, mais aussi d'établir si nous pouvons prédire la probabilité d'être fumeur ou fumeuse étant donné la FEV, l'âge, la taille et le genre dans cette population de jeunes de l'est de Boston.
+
+# Matériel et méthodes
+
+Les données sont disponibles sous licence GPL ≥ 2 à partir du package R {GLMsData}. Elles correspondent à une petite partie seulement des données de @Tager1983. Le jeu de données est, en outre, légèrement remanié (traitement documenté dans le fichier `R/import_lungcap.R`).
+
+L'analyse est réalisée avec le [logiciel R](https://www.r-project.org) (`r R.version.string`) et en particulier le package {modelit} version `r packageVersion("modelit")` dans la [SciViews Box 2025](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version finale de ce bloc-notes.
+
+# Résultats
+
+<!--% Importez les données lungcap.rds du dossier data et réalisez immédiatement une première description générale avec skim() et la fonction {skimr}. -->
+
+antidote_zzzzzz{r import, record='RODFS', object='lungcap'}
+lungcap <- read("data/lungcap.rds")
+skimr::skim(lungcap)
+antidote_zzzzzz
+
+antidote_zzzzzz{r importcomment, output='asis'}
+select_answer(r"-{
+[X] -  Il n'y a aucune donnée manquante.
+[O] -   Il y a plusieurs valeurs manquantes dans ce jeu de données.
+[O] -   Les données se distribuent de manière relativement équilibrée entre genre et fumeurs ou non.
+[o] -   Les données sont équilibrées entre les fumeurs ou non mais pas pour le genre.
+[x] -   Les données sont équilibrées pour le genre mais pas pour les fumeurs ou non.
+[o] -   Les données ne sont pas équilibrées, ni pour le genre, ni par rapport aux fumeurs ou non.
+[X] -   Les variables quantitatives FEV, Ht et Age ont des distribution unimodales.
+[O] -   Les variables quantitatives FEV, Ht et Age ont des distribution bimodales.
+[O] -   Les variables quantitatives FEV, Ht et Age ont des distribution multimodales.}-")
+antidote_zzzzzz
+
+## Étude descriptive des données
+
+La répartition en sous-populations en fonction du genre ou de l'habitude de fumer ou non est présentée dans le tableau ci-dessous.
+
+<!--% Réalisez un tableau de contingence à double entrée (variables `Smoke` et `Gender`) et sortez-en une version améliorée avec tabularise(). -->
+
+antidote_zzzzzz{r table, record='RNP', arg='col_keys', warning=FALSE}
+table(Fumeur = lungcap$Smoke, Genre = lungcap$Gender) |>
+  tabularise()
+antidote_zzzzzz
+
+La corrélation de Pearson entre les variables quantitatives du jeu de données est représentée graphiquement ci-dessous.
+
+<!--% Calculez la corrélation de Pearson entre les trois variables quantitives et faites-en un graphique. -->
+
+antidote_zzzzzz{r corr, record='ROA', object='corr', arg='dimnames', warning=FALSE}
+corr <- correlation(lungcap[, 1:3])
+plot(corr)
+antidote_zzzzzz
+
+Les relations entre FEV et taille et FEV et âge pour les deux sous-populations de fumeurs ou non sont réalisées ci-dessous.
+
+<!--% Visualisez la relation entre FEV et la taille en utilisant la couleur pour 'Smoke' et les facettes pour le genre. Ajoutez les droites de régression. -->
+
+antidote_zzzzzz{r fevht, record='RNCS'}
+chart(data = lungcap, FEV ~ Ht %col=% Smoke | Gender) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x)
+antidote_zzzzzz
+
+<!--% Tracez un second graphique similaire au précédent, mais de la FEV en fonction de l'âge cette fois-ci. -->
+
+antidote_zzzzzz{r fevage, record='RNCS'}
+chart(data = lungcap, FEV ~ Age %col=% Smoke | Gender) +
+  geom_point() +
+  stat_smooth(method = "lm", formula = y ~ x)
+antidote_zzzzzz
+
+<!--% Interprétez le tableau et les trois graphiques cochant à l'aide d'un 'x' les items qui correspondent à ce que vous observez. -->
+
+antidote_zzzzzz{r desccomment, output='asis'}
+select_answer(r"-{
+[X] -  Les données sont à peu près balancées pour le genre avec 48.6% de femmes.
+[o] -   Les données ne sont pas balancées pour le genre avec 48.6% de femmes.
+[O] -   Les données sont balancées entre fumeurs et non fumeurs.
+[X] -   Les données ne sont pas balancées entre fumeurs et non fumeurs. Il y a seulement 10% de fumeurs et la majorité sont des femmes.
+[O] -   Les données ne sont pas balancées entre fumeurs et non fumeurs. Il y a seulement 10% de fumeurs et la majorité sont des hommes.
+[o] -   Les variables quantitatives sont toutes positivement corrélées, mais de manière moyenne. Il n'y a pas de problème d'intercorrélation pour le modèle.
+[x] -   Les variables quantitatives sont toutes positivement corrélées, de manière moyenne à forte. Il faut se méfier de l'intercorrélation pour le modèle.
+[x] -   Pour les non fumeurs, les nuages de points sont à peu près linéaires, tant pour la FEV en fonction de la taille et de l'âge.
+[o] -   Pour les non fumeurs, les nuages de points ne sont pas suffisamment linéaires, tant pour la FEV en fonction de la taille et de l'âge.
+[o] -   Pour les fumeurs, nous pouvons faire la même constatation.
+[o] -   Pour les fumeurs, les nuages de points sont aussi linéaires, mais ils s'étalent dans des directions différentes.
+[o] -   Pour les fumeurs, la plage des données est trop faible que pour déterminer précisément l'allongement du nuage de points.
+[x] -   Pour les fumeurs, la plage des données est trop faible que pour déterminer précisément l'allongement du nuage de points, sauf pour la FEV en fonction de la taille chez les hommes où l'allongement est linéaire avec une pente légèrement plus forte que pour les non fumeurs.}-")
+antidote_zzzzzz
+
+## Volume respiratoire maximal
+
+Il est relativement logique que le volume respiratoire ou expiratoire maximal dépende de la taille, et de l'âge. Des différences sont aussi attendues en fonction du genre. Mais qu'en est-il du fait de fumer ou non ? Nous utilisons un modèle linéaire généralisé pour le déterminer.
+
+<!--% Utilisez un modèle linéaire généralisé pour étudier la relation entre la FEV et les autres variables genre, âge, taille sans interactions entres elles, mais bien avec la variable Smoke. Résumez votre analyse avec la fonction summary_() et formatez le tableau avec tabularise(). -->
+
+antidote_zzzzzz{r fev_glm, warning=FALSE, record='ROP', object='fev_glm', arg='call', warning=FALSE}
+fev_glm <- glm(data = lungcap, FEV ~ (Gender + Age + Ht) * Smoke, family = gaussian)
+summary_(fev_glm) |> tabularise(show.signif.stars = TRUE)
+antidote_zzzzzz
+
+antidote_zzzzzz{r fev_glmcomment, output='asis'}
+select_answer(r"-{
+[x] -  La déviance résiduelle est faible, le modèle s'ajuste bien.
+[o] -   La déviance résiduelle est faible par rapport à ses degrés de liberté, il y a sous-dispersion.
+[O] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%.
+[O] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, hors termes d'interaction qui ne le sont pas.
+[X] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, hors termes d'interaction qui ne le sont pas (mais les interactions entre la taille et le fait de fumer a une valeur *p* proche de 1%).}-")
+antidote_zzzzzz
+
+Sur base des ces observations, nous tentons une simplification du modèle.
+
+<!-- Simplifiez le modèle précédent en gardant toutes les variables, mais en ne conservant plus que les interactions entre la taille et Smoke et faites un "tabularise" de son résumé. -->
+
+antidote_zzzzzz{r fev_glm2, warning=FALSE, record='ROP', object='fev_glm2', arg='call', warning=FALSE}
+fev_glm2 <- glm(data = lungcap, FEV ~ Gender + Age + Ht * Smoke, family = gaussian)
+summary_(fev_glm2) |> tabularise()
+antidote_zzzzzz
+
+antidote_zzzzzz{r fev_glm2comment, output='asis'}
+select_answer(r"-{
+[x] -  La déviance résiduelle est faible, le modèle s'ajuste bien.
+[o] -   La déviance résiduelle est faible par rapport à ses degrés de liberté, il y a sous-dispersion.
+[X] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%.
+[o] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, sauf les deux derniers.
+[O] -   Aucun termes du modèle ne sont significatifs au seuil $\alpha$ de 5%.}-")
+antidote_zzzzzz
+
+Quel est le modèle le plus pertinent ici ?
+
+<!--% Comparez vos deux modèles pour vous aider à choisir le meilleur, à l'aide de l'AIC et d'une ANOVA (employé la fonction anova_() au lieu de anova()). -->
+
+antidote_zzzzzz{r fev_compa, record='RNP', arg='col_keys', warning=FALSE}
+AIC(fev_glm, fev_glm2)
+anova_(fev_glm, fev_glm2, test = "F") |> tabularise()
+antidote_zzzzzz
+
+antidote_zzzzzz{r fev_compacomment, output='asis'}
+select_answer(r"-{
+[O] -  L'AIC et l'ANOVA sont en faveur du premier modèle que nous conservons.
+[X] -   L'AIC et l'ANOVA sont en faveur du second modèle que nous conservons.
+[O] -   L'AIC est en faveur du premier modèle et l'ANOVA en faveur du second. Nous décidons de conserver le premier.
+[O] -   L'AIC est en faveur du premier modèle et l'ANOVA en faveur du second. Nous décidons de conserver le second.
+[O] -   L'AIC est en faveur du second modèle et l'ANOVA en faveur du premier. Nous décidons de conserver le premier.
+[O] -   L'AIC est en faveur du second modèle et l'ANOVA en faveur du premier. Nous décidons de conserver le second.}-")
+antidote_zzzzzz
+
+Vérification de notre modèle par l'analyse de ses résidus.
+
+<!--% Effectuez l'analyse des résidus du modèle que vous conservez (version utilisant les quatre graphiques composites. -->
+
+antidote_zzzzzz{r fev_resid, record='RNCS', arg='no.data' }
+chart$residuals(fev_glm2)
+antidote_zzzzzz
+
+antidote_zzzzzz{r fev_residcomment, output='asis'}
+select_answer(r"-{
+[o] -  Les résidus sont faibles par rapport à la plage de valeurs prédites (A).
+[x] -   Les résidus sont moyens par rapport à la plage de valeurs prédites (A)
+[o] -   Les résidus sont importants par rapport à la plage de valeurs prédites (A).
+[o] -   La linéarité est parfaitement respectée (A).
+[x] -   La linéarité est relativement bien respectée (A).
+[O] -   La linéarité n'est pas respectée (A).
+[O] -   Il y a une valeur extrême (A).
+[O] -   Il y a plusieurs valeurs extrêmes (A).
+[O] -   Les résidus ont une distribution Normale (B).
+[o] -   Les résidus ont une distribution qui ne diffère pas trop de la Normale, mais semblent légèrement asymétriques (B).
+[x] -   Les résidus ont une distribution qui ne diffère pas trop de la Normale, et elle est symétrique (B).
+[o] -   Les résidus ont une distribution non Normale, mais cela reste acceptable compte tenu de la robustesse de la méthode par rapport à ce critère (B).
+[O] -   Les résidus ont une distribution non Normale (B).
+[o] -   Il y a homoscédasticité des résidus (C).
+[x] -   Il y a une relativement bonne homoscédasticité des résidus (C).
+[O] -   Il y a hétéroscédasticité des résidus (C).
+[O] -   Aucun point n'a de distance de Cook importante, ni de grand effet de levier (D).
+[X] -   Un point a un effet de levier important, mais sans influencer le modèle car sa distance de Cook est faible (D).
+[o] -   Plusieurs points ont un effet de levier important, mais sans influencer le modèle car leurs distances de Cook sont faible (D).
+[O] -   Un point a une distance de Cook importante (D).
+[o] -   Plusieurs points ont une distance de Cook importante et ils se situent du même côté, ce qui est problématique (D).
+[x] -   Plusieurs points ont une distance de Cook importante mais ils se répartissent de part et d'autre du zéro, ce qui minimise le problème (D).}-")
+antidote_zzzzzz
+
+Voici l'équation du modèle que nous retenons :
+
+<!--% Paramétrisez le modèle retenu (certains arguments sont déjà préremplis pour bien présenter l'équation... Inspirez vous de ceci pour plus tard). -->
+
+$$
+`r eq__(fev_glm2, use_coefs = TRUE, coef_digits = c(2, 2, 3, 3, 2, 3), wrap = TRUE, terms_per_line = 2)`
+$$
+
+Ce modèle est équivalent à un modèle linéaire.
+
+<!--% Effectuez le modèle linéaire avec lm() équivalent au modèle que vous avez retenu et affichez la version "tabularise()" de son résumé pour vérifier qu'il s'agit bien du même modèle. -->
+
+antidote_zzzzzz{r fev_lm, warning=FALSE, record='ROP', object='fev_lm', arg='call', warning=FALSE}
+fev_lm <- lm(data = lungcap, FEV ~ Gender + Age + Ht * Smoke)
+summary_(fev_lm) |> tabularise()
+antidote_zzzzzz
+
+antidote_zzzzzz{r fev_lmcomment, output='asis'}
+select_answer(r"-{
+[O] -  Le *R*^2^ est excellent.
+[X] -   Le *R*^2^ est relativement bon.
+[O] -   Le *R*^2^ est mauvais.
+[X] -   Le tableau des coefficients montre que le modèle LM est strictement identique au GLM avec fonction de lien identité.
+[O] -   Le tableau des coefficients montre que le modèle LM est similaire au GLM avec fonction de lien identité.
+[O] -   Le tableau des coefficients montre que le modèle LM ressemble au GLM avec fonction de lien identité, et les conclusions sont sensiblement les mêmes.}-")
+antidote_zzzzzz
+
+## Probabilité d'être fumeur
+
+Dans le modèle précédent `Smoke` joue un rôle mineur mais non nul comme variable prédictive de `FEV`. Est-il possible de prédire, à l'inverse la probabilité d'être fumeur à l'aide des autres variables, dont `FEV` ?
+
+<!--% Réalisez une GLM pour prédire Smoke en fonction du genre, de l'âge, de FEV et de la taille sans interaction, puis faites-en le résumé (avec la fonction summary_()) "tabularisé" . -->
+
+antidote_zzzzzz{r smoke_glm, warning=FALSE, record='ROP', object='smoke_glm', arg='call', warning=FALSE}
+smoke_glm <- glm(data = lungcap, Smoke ~ Gender + Age + FEV + Ht, family = binomial)
+summary_(smoke_glm) |> tabularise()
+antidote_zzzzzz
+
+antidote_zzzzzz{r smoke_glmcomment, output='asis'}
+select_answer(r"-{
+[O] -  Le paramètre de dispersion estimé est 300/649 = 0.46. Il est faible et c'est signe que le modèle s'ajuste bien
+[X] -   Le paramètre de dispersion estimé est 300/649 = 0.46 alors qu'il devrait être proche de 1 pour ce modèle. Il y a sous-dispersion.
+[O] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%.
+[o] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, sauf $\beta_3$ relatif à FEV. Nous devrions éliminer ce terme du modèle.
+[x] -   Tous les termes du modèle sont significatifs au seuil $\alpha$ de 5%, sauf $\beta_3$ relatif à FEV. Comme la valeur *p* de ce paramètre est proche de 1% et qu'il y a sous-dispersion (donc risque de biais), il faut se garder d'interpréter trop vite le résultat. Un modèle sans ce terme et/ou une GLM quasi binomiale devraient être tentés.}-")
+antidote_zzzzzz
+
+Essayons de simplifier ce modèle.
+
+<!--% Ajustez un modèle linéaire généralisé pour lequel vous retirez le terme le moins significatif et faites-en le résumé. -->
+
+antidote_zzzzzz{r smoke_glm2, warning=FALSE, record='ROP', object='smoke_glm2', arg='call', warning=FALSE}
+smoke_glm2 <- glm(data = lungcap, Smoke ~ Gender + Age + Ht, family = binomial)
+summary_(smoke_glm2) |> tabularise()
+antidote_zzzzzz
+
+Lequel des deux modèles allons-nous conserver ?
+
+<!--% Comparez ces deux modèles. -->
+
+antidote_zzzzzz{r smoke_compa, record='RNP', arg='col_keys', warning=FALSE}
+AIC(smoke_glm, smoke_glm2)
+anova_(smoke_glm, smoke_glm2, test = "Chisq")  |>
+  tabularise()
+antidote_zzzzzz
+
+antidote_zzzzzz{r smoke_compacomment, output='asis'}
+select_answer(r"-{
+[O] -  L'AIC et le $\chi^2$ sont en faveur du premier modèle que nous conservons.
+[O] -   L'AIC et le $\chi^2$ sont en faveur du second modèle que nous conservons.
+[O] -   L'AIC est en faveur du premier modèle et le $\chi^2$ en faveur du second. Nous décidons de conserver le premier.
+[O] -   L'AIC est en faveur du premier modèle et le $\chi^2$ en faveur du second. Nous décidons de conserver le second.
+[X] -   L'AIC est en faveur du premier modèle et le $\chi^2$ en faveur du second. Nous avons du mal à décider sachant qu'il y a sous-dispersion et que la fiabilité des tests sur les paramètres est discutable.
+[O] -   L'AIC est en faveur du second modèle et le $\chi^2$ en faveur du premier. Nous décidons de conserver le premier.
+[O] -   L'AIC est en faveur du second modèle et le $\chi^2$ en faveur du premier. Nous décidons de conserver le second.
+[O] -   L'AIC est en faveur du second modèle et le $\chi^2$ en faveur du premier. Nous avons du mal à décider sachant qu'il y a sous-dispersion et que la fiabilité des tests sur les paramètres est discutable.}-")
+antidote_zzzzzz
+
+Tentons un modèle quasi binomial.
+
+<!--% Réalisez un modèle quasi binomial du modèle complet reprenant toutes les variables mais sans interaction. Ensuite faites-en le résumé "tabularisé" comme d'habitude. -->
+
+antidote_zzzzzz{r smoke_glm3, warning=FALSE, record='ROP', object='smoke_glm3', arg='call', warning=FALSE}
+smoke_glm3 <- glm(data = lungcap, Smoke ~ Gender + Age + FEV + Ht, family = quasibinomial)
+summary_(smoke_glm3) |> tabularise()
+antidote_zzzzzz
+
+antidote_zzzzzz{r smoke_glm3comment, output='asis'}
+select_answer(r"-{
+[X] -  L'estimation des paramètres des modèles binomial et quasi binomial est identique.
+[O] -  L'estimation des paramètres des modèles binomial et quasi binomial est très similaire.
+[O] -  L'estimation des paramètres des modèles binomial et quasi binomial est différente.
+[O] -   Le paramètre de dispersion estimé est 300/649 = 0.46 est le même dans les deux cas. La valeur utilisée par les modèles sont également les mêmes.
+[X] -   Le paramètre de dispersion estimé est 300/649 = 0.46 est le même dans les deux cas. Mais alors que le modèle binomial fixe ce paramètre à un, le quasi binomial l'a recalculé à 0.7, apportant ainsi une correction.
+[O] -   L'écart type des paramètres est le même entre les deux GLMs.
+[O] -   L'écart type des paramètres est supérieur pour la quasi binomiale en cas de sous-dispersion.
+[X] -   L'écart type des paramètres est inférieur pour la quasi binomiale en cas de sous dispersion. Le modèle binomial apparaît donc plus conservateur.
+[O] -   La significativité des paramètres, bien que mesurée différemment, donne les mêmes résultats.
+[o] -   Suite au caractère conservateur d'une binomiale sous-dispersée, nous pouvons nous attendre à ce que $\beta_3$ ne soit pas significativement différent de zéro au seuil $\alpha$ de 5% dans le modèle binomial, alors qu'il l'est dans le modèle quasi binomial. C'est le résultat de la binomiale qu'il faut considérer et ce paramètre n'est pas significatif.
+[x] -   Suite au caractère conservateur d'une binomiale sous-dispersée, nous pouvons nous attendre à ce que $\beta_3$ ne soit pas significativement différent de zéro au seuil $\alpha$ de 5% dans le modèle binomial, alors qu'il l'est dans le modèle quasi binomial. C'est le résultat de la quasi binomiale qu'il faut considérer et ce paramètre est donc significatif.
+[X] -   Dans la GLM quasi binomiale, la log-vraissemblance n'est pas calculable, et donc également le critère d'Akaike. Cela ne facilite pas la comparaison de modèles.}-")
+antidote_zzzzzz
+
+Notre modèle paramétré est le suivant :
+
+<!--% complétez les code ci-dessous pour représenter le modèle quasi binomial paramétré. -->
+
+$$
+`r eq__(smoke_glm3, use_coefs = TRUE, coef_digits = c(2, 2, 2, 2, 3), wrap = TRUE, terms_per_line = 3)`
+$$
+
+<!--# D'après vous, pourquoi ne faisons-nous pas d'analyse des résidus de ce modèle ? -->
+
+# Discussion et conclusion
+
+<!--% Rédigez une discussion et des conclusions en 3 à 5 phrases concernant l'utilisation de modèles GLM dans le contexte de ces données. -->
+
+... \[Votre discussion à la place de ce texte\]...
+
+# Références
