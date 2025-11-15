@@ -8,7 +8,7 @@ Ce projet est **court**, **individuel** et **cadré**. Il vise à compléter vot
 
 -   Décrire correctement des données en vue de leur modélisation
 
--   Créer et analyser des modèles linéaires généralisés, en restant vigilant d'éviter la sur- ou sousdispersion
+-   Créer et analyser des modèles linéaires généralisés, en restant vigilant d'éviter la sur- ou sous-dispersion
 
 -   Simplifier vos modèles linéaires généralisés de manière justifiée (AIC, Chi2)
 
@@ -17,6 +17,10 @@ Ce projet est **court**, **individuel** et **cadré**. Il vise à compléter vot
 ## Consignes
 
 Complétez les zones manquantes dans le fichier `lungcap_notebook.qmd`. Compilez la version finale au format HTML. Vous avez une batterie de tests à votre disposition (onglet "Construire" -> bouton "Construire tout") pour vérifier l'état de votre travail. Note : utilisez ces tests à la fin. Concentrez-vous d'abord sur vos analyses, puis faites un rendu final du document lorsque tout est complété, et seulement après, utilisez les tests. Il est contre-productif d'activer les tests à chaque nouvelle ligne de code ajoutée dans votre document ! Assurez-vous que votre document Quarto compile sans erreurs à la fin de votre travail **(très important : un document qui ne compile pas sans erreur devra être sanctionné de manière importante)**. Vérifiez aussi à la fin que vos derniers commits ont bien été pushés sur GitHub.
+
+## Utilisation de l’IA
+
+Dans le cadre de votre travail, vous avez le droit d’être aidé par l’intelligence artificielle. Le chatbot SciViews est disponible dans votre RStudio sur Saturn Cloud via l’addin Help. Il répond aux questions concernant le langage R, les statistiques et la science des données.
 
 ## Informations sur les données
 
